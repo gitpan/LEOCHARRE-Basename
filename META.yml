@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               LEOCHARRE-Basename
-version:            1.05
+version:            1.06
 abstract:           very basic filename string and path operations such as ext and paths
 author:
     - Leo Charre leocharre at cpan dot org

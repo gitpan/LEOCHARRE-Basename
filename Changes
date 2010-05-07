@@ -1,3 +1,8 @@
+2010-04-28 15:23  cvs
+
+	* lib/LEOCHARRE/Basename.pm: added abs_path_or_die() and
+	  abs_loc_or_die()
+
 2010-04-13 12:09  cvs
 
 	* lib/LEOCHARRE/Basename.pm: had an error on sub export in

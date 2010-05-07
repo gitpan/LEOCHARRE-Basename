@@ -3,9 +3,9 @@ use strict;
 use vars qw(@EXPORT_OK %EXPORT_TAGS @ISA $VERSION);
 use Exporter;
 use Carp;
-$VERSION = sprintf "%d.%02d", q$Revision: 1.5 $ =~ /(\d+)/g;
+$VERSION = sprintf "%d.%02d", q$Revision: 1.6 $ =~ /(\d+)/g;
 @ISA = qw/Exporter/;
-@EXPORT_OK = qw(basename abs_dir abs_dir_or_die abs_file abs_file_or_die abs_loc abs_path dirname filename filename_ext filename_only);
+@EXPORT_OK = qw(basename abs_dir abs_loc_or_die abs_path_or_die abs_dir_or_die abs_file abs_file_or_die abs_loc abs_path dirname filename filename_ext filename_only);
 %EXPORT_TAGS = ( all => \@EXPORT_OK ); # this was missing \@ a slash, causing errors
 
 
@@ -35,6 +35,7 @@ sub abs_loc {
    $a=~s/\/[^\/]+\/*$//;
    $a;
 }
+sub abs_loc_or_die { abs_loc($_[0]) or die }
 
 sub abs_file {
    require Cwd;
@@ -58,7 +59,13 @@ sub abs_path {
    $abs;
 }
 
-
+sub abs_path_or_die {
+   require Cwd;
+   require Carp;
+   my $abs = Cwd::abs_path($_[0]) or Carp::croak("Can't Cwd::abs_path('$_[0]')");
+   -e $abs or Carp::croak("Not on disk: '$abs'");
+   $abs;
+}
 sub abs_file_or_die {
    require Cwd;
    require Carp;
@@ -109,34 +116,28 @@ LEOCHARRE::Basename - very basic filename string and path operations such as ext
 
 None exported by default.
 
+All of the subs warn if they do not find something.
+All of the subs use Cwd::abs_path() internally, so all symlinks are resolved.
+
 =head2 abs_dir()
 
 Arg is path string.
 Checks that it is a dir on disk.
 Returns abs path.
-Returns undef on fail.
+Returns undef and warns on fail.
+
+=head2 abs_dir_or_die()
+
+Like abs_dir() but dies on fail.
 
 =head2 abs_file()
 
 Arg is path string.
 Checks that it is a file on disk.
 Returns abs path.
-Returns undef on fail.
-
-
-=head2 abs_dir_or_die()
-
-Arg is path string.
-Checks that it is a dir on disk.
-Returns abs path.
-Dies on fail.
+Returns undef and warns on fail.
 
 =head2 abs_file_or_die()
-
-Arg is path string.
-Checks that it is a file on disk.
-Returns abs path.
-Dies on fail.
 
 =head2 abs_loc()
 
@@ -145,12 +146,15 @@ Checks that it exists on disk.
 Returns abs path to parent directory.
 Returns undef on fail.
 
+=head2 abs_loc_or_die() 
+
 =head2 abs_path()
 
 Arg is path string.
-Checks that it exists on disk.
-Returns abs path.
+Checks that it exists on disk. Returns abs path.
 Returns undef on fail.
+
+=head2 abs_path_or_die()
 
 =head2 dirname()
 
