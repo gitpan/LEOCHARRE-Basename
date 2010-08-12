@@ -3,20 +3,23 @@ use strict;
 use vars qw(@EXPORT_OK %EXPORT_TAGS @ISA $VERSION);
 use Exporter;
 use Carp;
-$VERSION = sprintf "%d.%02d", q$Revision: 1.6 $ =~ /(\d+)/g;
+$VERSION = sprintf "%d.%02d", q$Revision: 1.8 $ =~ /(\d+)/g;
 @ISA = qw/Exporter/;
-@EXPORT_OK = qw(basename abs_dir abs_loc_or_die abs_path_or_die abs_dir_or_die abs_file abs_file_or_die abs_loc abs_path dirname filename filename_ext filename_only);
+@EXPORT_OK = qw(basename basename_ext abs_dir abs_loc_or_die abs_path_or_die abs_dir_or_die abs_file abs_file_or_die abs_loc abs_path dirname filename filename_ext filename_only);
 %EXPORT_TAGS = ( all => \@EXPORT_OK ); # this was missing \@ a slash, causing errors
-
 
 sub dirname { my $loc = abs_loc($_[0]); filename($loc); }
 
+*basename_only = \&filename_only;
+*basename_ext = \&filename_ext;
 *basename = \&filename;
+
 sub filename {
    $_[0] or return;
    $_[0]=~/([^\/]+)\/*$/ or return;
    $1;   
 }
+
 sub filename_ext {
    my $f = filename(+shift) or return;
    $f=~/\.([a-z0-9]{1,7})$/i or return;
@@ -98,8 +101,6 @@ sub _matches_one_of {
    return;
 }
 
-
-
 1;
 
 
@@ -110,7 +111,6 @@ __END__
 =head1 NAME
 
 LEOCHARRE::Basename - very basic filename string and path operations such as ext and paths
-
 
 =head1 SUBS
 

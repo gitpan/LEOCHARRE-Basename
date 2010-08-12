@@ -2,7 +2,6 @@ use Test::Simple 'no_plan';
 use strict;
 use lib './lib';
 use vars qw($_part $cwd);
-use Smart::Comments '###';
 
 
 
